@@ -23,3 +23,23 @@ plt.figure(2)
 plot_offset(output_resampled)
 
 
+tr = obspy.read('mseed/2018-11-27T09_10_04..188..HDF.mseed')[0]
+#tr = obspy.read('mseed/2018-11-27T09_30_27..188..HDF.mseed')[0]
+
+#%% Calculate the sub-sample time offset for this trace
+output = pps_phase_analysis(tr, 0.08)
+plt.figure(1)
+plot_offset(output)
+
+#%% Resample the trace to correct the offset, then recalculate to make sure it worked
+tr_resampled = resample_trace(tr, output['offset'].mean())
+output_resampled = pps_phase_analysis(tr_resampled)
+
+
+#mseed/2018-11-27T09_10_04..188..HDF.mseed
+#In [2]: output['offset'].mean()
+#Out[2]: 0.0080808899965558578
+
+#mseed/2018-11-27T09_30_27..188..HDF.mseed
+#In [6]: output['offset'].mean()
+#Out[6]: 0.0080017524041817011
